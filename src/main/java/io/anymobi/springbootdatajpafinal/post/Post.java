@@ -1,10 +1,12 @@
 package io.anymobi.springbootdatajpafinal.post;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Post {
+public class Post extends AbstractAggregateRoot<Post> {
 
     @Id @GeneratedValue
     Long id;
@@ -15,8 +17,8 @@ public class Post {
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
 
+    private Date date;
     public Long getId() {
         return id;
     }
@@ -54,5 +56,14 @@ public class Post {
         return "Post{" +
                 "title='" + title + '\'' +
                 '}';
+    }
+
+    public Post publish() {
+
+
+        this.registerEvent(new PostPublishedEvent(this));
+
+        return this;
+
     }
 }
